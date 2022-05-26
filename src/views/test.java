@@ -4,7 +4,9 @@ import Dao.PhongDao;
 import dto.Phong;
 
 public class test {
-
+/*
+ * me quyen ml
+ */
 	public static void main(String[] args) {
 		PhongDao p = new PhongDao();
 //		Phong pp = new Phong("505");
