@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import dto.HoaDon;
-
+// init hoa don
 public class hoaDonD extends BaseDao<HoaDon> {
 
 	@Override
