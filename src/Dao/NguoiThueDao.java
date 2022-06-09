@@ -7,7 +7,7 @@ import java.util.List;
 
 import dto.Phong;
 import dto.nguoiThue;
-
+// khoi tao nguoi thue dao
 public class NguoiThueDao extends BaseDao<nguoiThue> {
 
 	@Override
