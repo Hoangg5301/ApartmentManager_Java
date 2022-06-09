@@ -45,7 +45,7 @@ public abstract class BaseDao<D extends Base> {
 		}
 	}
 	/*
-	 * xóa theo id theo yeu cau
+	 * xóa theo id
 	 */
 	public void deleteById(int id) throws Exception{
 		List<D> ls = readData();// lấy danh sách từ file
