@@ -30,6 +30,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.UIManager;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class QuanLyPhong extends JFrame {
 
@@ -40,17 +43,19 @@ public class QuanLyPhong extends JFrame {
 	private PhongDao pd = new PhongDao();
 	private List<Phong> ps;
 	DefaultTableModel tb;
-	Object[] colum = { "Mã phòng", "Tên phòng", "Số người ở", "Giá phòng/Tháng" };
+	Object[] colum = { "Mã phòng", "Tên phòng", "Số người/Phòng", "Giá phòng/Tháng" };
 	private JTextField giap;
+	private JTextField ng;
+	private Phong p;
 
-	public void loadDl() {
-		
+	public void loadDl() {		
 		tb = new DefaultTableModel();
 		tb.setColumnIdentifiers(colum);
 		ps = pd.allList();
 		for (Phong p : ps) {
-			tb.addRow(new Object[] { p.getId(), p.getTenPhong(), p.getSong(), p.getGiaPhong() });
+			tb.addRow(new Object[] { p.getId(), p.getTenPhong(), p.getSongP(), p.getGiaPhong() });
 		}
+		
 		table.setModel(tb);
 	}
 
@@ -74,21 +79,29 @@ public class QuanLyPhong extends JFrame {
 	 * Create the frame.
 	 */
 	public QuanLyPhong() {
+		
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 688, 509);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 731, 518);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JLabel lblNewLabel = new JLabel("Quản lý phòng");
-		lblNewLabel.setForeground(Color.BLUE);
-		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 18));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(237, 32, 164, 29);
-		contentPane.add(lblNewLabel);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.DARK_GRAY);
+		panel_1.setBounds(0, 0, 715, 39);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
+				JLabel lblNewLabel = new JLabel("Quản lý phòng trọ");
+				lblNewLabel.setBounds(0, 0, 715, 39);
+				panel_1.add(lblNewLabel);
+				lblNewLabel.setBackground(Color.DARK_GRAY);
+				lblNewLabel.setForeground(Color.WHITE);
+				lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 21));
+				lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JLabel lblNewLabel_1 = new JLabel("Tên Phòng :");
 		lblNewLabel_1.setForeground(SystemColor.infoText);
@@ -103,44 +116,163 @@ public class QuanLyPhong extends JFrame {
 		contentPane.add(lblNewLabel_1_1);
 
 		map = new JTextField();
-		map.setBounds(144, 91, 130, 20);
+		map.setBounds(144, 91, 102, 20);
 		contentPane.add(map);
 		map.setColumns(10);
 
 		tenp = new JTextField();
-		tenp.setBounds(142, 128, 131, 20);
+		tenp.setBounds(142, 128, 102, 20);
 		contentPane.add(tenp);
 		tenp.setColumns(10);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(0, 192, 715, 278);
+		contentPane.add(panel);
+		panel.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(328, 94, 291, 335);
-		contentPane.add(scrollPane);
+		scrollPane.setBounds(0, 37, 715, 241);
+		panel.add(scrollPane);
+		scrollPane.setFont(new Font("Segoe UI", Font.BOLD | Font.ITALIC, 12));
+		scrollPane.setRequestFocusEnabled(false);
+		scrollPane.setOpaque(false);
+		scrollPane.setFocusable(false);
+		scrollPane.setFocusTraversalKeysEnabled(false);
+		scrollPane.setEnabled(false);
+		scrollPane.setBackground(Color.WHITE);
 		table = new JTable();
+		table.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		table.setShowHorizontalLines(false);
+		table.setShowVerticalLines(false);
+		table.setVerifyInputWhenFocusTarget(false);
+		table.setUpdateSelectionOnSort(false);
+		table.setSelectionForeground(Color.WHITE);
+		table.setSelectionBackground(Color.DARK_GRAY);
+		table.setForeground(Color.WHITE);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				map.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
 				tenp.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
 				giap.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+				ng.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
 			}
 		});
 		table.setFocusable(false);
 		table.setFocusTraversalKeysEnabled(false);
 		scrollPane.setViewportView(table);
-		table.setBackground(Color.WHITE);
+		table.setBackground(Color.GRAY);
 		table.setBorder(null);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+				JButton btnHinTh_1 = new JButton("Hiển thị");
+				btnHinTh_1.setBounds(122, 0, 126, 29);
+				panel.add(btnHinTh_1);
+				btnHinTh_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						loadDl();
+
+					}
+				});
+				btnHinTh_1.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+				btnHinTh_1.setForeground(Color.WHITE);
+				btnHinTh_1.setFocusable(false);
+				btnHinTh_1.setFocusTraversalKeysEnabled(false);
+				btnHinTh_1.setFocusPainted(false);
+				btnHinTh_1.setBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+				btnHinTh_1.setBackground(Color.DARK_GRAY);
+				
+						JButton btnHinTh_1_1 = new JButton("Tìm kiếm");
+						btnHinTh_1_1.setBounds(290, 0, 126, 29);
+						panel.add(btnHinTh_1_1);
+						btnHinTh_1_1.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+
+								try {
+									tb = new DefaultTableModel();
+									tb.setColumnIdentifiers(colum);
+									ps = pd.searchById(Integer.valueOf(map.getText()));
+									for (Phong p : ps) {
+										tb.addRow(new Object[] { p.getId(), p.getTenPhong(), p.getSong(), p.getGiaPhong() });
+									}
+									table.setModel(tb);
+								} catch (Exception e2) {
+									// TODO Auto-generated catch block
+									JOptionPane.showMessageDialog(contentPane, e2.getMessage(), "Thông báo",
+											JOptionPane.INFORMATION_MESSAGE);
+								}
+							}
+						});
+						btnHinTh_1_1.setForeground(Color.WHITE);
+						btnHinTh_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+						btnHinTh_1_1.setFocusable(false);
+						btnHinTh_1_1.setFocusTraversalKeysEnabled(false);
+						btnHinTh_1_1.setFocusPainted(false);
+						btnHinTh_1_1.setBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+						btnHinTh_1_1.setBackground(Color.DARK_GRAY);
+						
+						JButton btnHinTh_1_1_1 = new JButton("Xem phòng");
+						btnHinTh_1_1_1.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								try {
+									p = pd.searchById(Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString())).get(0);
+									
+									QuanLyNguoiThuePhong qlp =new  QuanLyNguoiThuePhong(p);
+									qlp.setVisible(true);
+								} catch (Exception e1) {
+									
+								}
+								
+							}
+						});
+						btnHinTh_1_1_1.setForeground(Color.WHITE);
+						btnHinTh_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+						btnHinTh_1_1_1.setFocusable(false);
+						btnHinTh_1_1_1.setFocusTraversalKeysEnabled(false);
+						btnHinTh_1_1_1.setFocusPainted(false);
+						btnHinTh_1_1_1.setBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+						btnHinTh_1_1_1.setBackground(Color.DARK_GRAY);
+						btnHinTh_1_1_1.setBounds(451, 0, 126, 29);
+						panel.add(btnHinTh_1_1_1);
 		loadDl();
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		JButton btnNewButton = new JButton("Thêm");
-		btnNewButton.addActionListener(new ActionListener() {
+
+		JLabel lblNewLabel_1_2 = new JLabel("Giá Phòng/tháng :");
+		lblNewLabel_1_2.setForeground(Color.BLACK);
+		lblNewLabel_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_1_2.setBounds(273, 91, 115, 22);
+		contentPane.add(lblNewLabel_1_2);
+
+		giap = new JTextField();
+		giap.setColumns(10);
+		giap.setBounds(391, 93, 102, 20);
+		contentPane.add(giap);
+		
+		JButton btnHinTh_1_2 = new JButton("Thêm");
+		btnHinTh_1_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (tenp != null && tenp.getText().length() > 0) {
 					if (giap != null && giap.getText().length() > 0) {
-						Phong p = new Phong();
-						p.setTenPhong(tenp.getText());
-						p.setGiaPhong(giap.getText());
-						pd.add(p);
-						loadDl();
+						if(ng != null && ng.getText().length()>0) {
+							Phong p = new Phong();
+							p.setTenPhong(tenp.getText());
+							
+							try {
+								p.setSongP(ng.getText());
+								p.setGiaPhong(giap.getText());
+								pd.add(p);
+								loadDl();
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								JOptionPane.showMessageDialog(contentPane, e1.getMessage(), "Thông báo",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
+						}else {
+							JOptionPane.showMessageDialog(contentPane, "Không được để trống số người/Phòng", "Thông báo",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+						
+
 					} else {
 						JOptionPane.showMessageDialog(contentPane, "Không được để trống giá phòng", "Thông báo",
 								JOptionPane.INFORMATION_MESSAGE);
@@ -150,29 +282,24 @@ public class QuanLyPhong extends JFrame {
 					JOptionPane.showMessageDialog(contentPane, "Không được để trống tên phòng", "Thông báo",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
+				
 			}
 		});
-		btnNewButton.setBackground(new Color(119, 136, 153));
-		btnNewButton
-				.setBorder(new TitledBorder(
-						new TitledBorder(
-								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-										new Color(160, 160, 160)),
-								"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-						"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnNewButton.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnNewButton.setFocusable(false);
-		btnNewButton.setFocusTraversalKeysEnabled(false);
-		btnNewButton.setFocusPainted(false);
-		btnNewButton.setBounds(54, 323, 89, 23);
-		contentPane.add(btnNewButton);
-
-		JButton btnSa = new JButton("Sửa");
-		btnSa.addActionListener(new ActionListener() {
+		btnHinTh_1_2.setForeground(Color.WHITE);
+		btnHinTh_1_2.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		btnHinTh_1_2.setFocusable(false);
+		btnHinTh_1_2.setFocusTraversalKeysEnabled(false);
+		btnHinTh_1_2.setFocusPainted(false);
+		btnHinTh_1_2.setBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+		btnHinTh_1_2.setBackground(Color.DARK_GRAY);
+		btnHinTh_1_2.setBounds(544, 84, 126, 29);
+		contentPane.add(btnHinTh_1_2);
+		
+		JButton btnHinTh_1_3 = new JButton("Sửa");
+		btnHinTh_1_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				try {
-					Phong p = new Phong(tenp.getText(), giap.getText());
+					Phong p = new Phong(tenp.getText(), giap.getText(),ng.getText());
 					p.setId(Integer.valueOf(map.getText()));
 					pd.edit(p);
 					loadDl();
@@ -184,188 +311,52 @@ public class QuanLyPhong extends JFrame {
 				}
 			}
 		});
-		btnSa.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnSa.setFocusable(false);
-		btnSa.setFocusTraversalKeysEnabled(false);
-		btnSa.setFocusPainted(false);
-		btnSa.setBorder(
-				new TitledBorder(
-						new TitledBorder(
-								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-										new Color(160, 160, 160)),
-								"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-						"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnSa.setBackground(new Color(119, 136, 153));
-		btnSa.setBounds(54, 369, 89, 23);
-		contentPane.add(btnSa);
-
-		JButton btnXa = new JButton("Xóa");
-		btnXa.addActionListener(new ActionListener() {
+		btnHinTh_1_3.setForeground(Color.WHITE);
+		btnHinTh_1_3.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		btnHinTh_1_3.setFocusable(false);
+		btnHinTh_1_3.setFocusTraversalKeysEnabled(false);
+		btnHinTh_1_3.setFocusPainted(false);
+		btnHinTh_1_3.setBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+		btnHinTh_1_3.setBackground(Color.DARK_GRAY);
+		btnHinTh_1_3.setBounds(544, 118, 126, 29);
+		contentPane.add(btnHinTh_1_3);
+		
+		JButton btnHinTh_1_4 = new JButton("Xóa");
+		btnHinTh_1_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 					pd.deleteById(Integer.valueOf(map.getText()));
-
+					
 				} catch (Exception e2) {
 					JOptionPane.showMessageDialog(contentPane, e2.getMessage(), "Thông báo",
 							JOptionPane.INFORMATION_MESSAGE);
 				} finally {
 					loadDl();
 				}
-
 			}
 		});
-		btnXa.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnXa.setFocusable(false);
-		btnXa.setFocusTraversalKeysEnabled(false);
-		btnXa.setFocusPainted(false);
-		btnXa.setBorder(
-				new TitledBorder(
-						new TitledBorder(
-								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-										new Color(160, 160, 160)),
-								"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-						"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnXa.setBackground(new Color(119, 136, 153));
-		btnXa.setBounds(185, 323, 89, 23);
-		contentPane.add(btnXa);
-
-		JButton btnTimf = new JButton("Tìm kiếm");
-		btnTimf.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					tb = new DefaultTableModel();
-					tb.setColumnIdentifiers(colum);
-					ps = pd.searchById(Integer.valueOf(map.getText()));
-					for (Phong p : ps) {
-						tb.addRow(new Object[] { p.getId(), p.getTenPhong(), p.getSong(), p.getGiaPhong() });
-					}
-					table.setModel(tb);
-				} catch (Exception e2) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(contentPane, e2.getMessage(), "Thông báo",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		btnTimf.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnTimf.setFocusable(false);
-		btnTimf.setFocusTraversalKeysEnabled(false);
-		btnTimf.setFocusPainted(false);
-		btnTimf.setBorder(
-				new TitledBorder(
-						new TitledBorder(
-								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-										new Color(160, 160, 160)),
-								"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-						"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnTimf.setBackground(new Color(119, 136, 153));
-		btnTimf.setBounds(185, 369, 89, 23);
-		contentPane.add(btnTimf);
-
-		JButton btnHinTh = new JButton("Hiển thị");
-		btnHinTh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loadDl();
-			}
-		});
-		btnHinTh.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnHinTh.setFocusable(false);
-		btnHinTh.setFocusTraversalKeysEnabled(false);
-		btnHinTh.setFocusPainted(false);
-		btnHinTh.setBorder(
-				new TitledBorder(
-						new TitledBorder(
-								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-										new Color(160, 160, 160)),
-								"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-						"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnHinTh.setBackground(new Color(119, 136, 153));
-		btnHinTh.setBounds(107, 251, 89, 23);
-		contentPane.add(btnHinTh);
-
-		JButton btnHinThTheo = new JButton("Hiển thị theo số lượng người ở");
-		btnHinThTheo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tb = new DefaultTableModel();
-				tb.setColumnIdentifiers(colum);
-				ps = new ArrayList<>();
-				if (pd.allList().size() > 0) {
-					for (int i = 0; i < pd.allList().size(); i++) {
-						for (int j = pd.allList().size(); j > i + 1; j--) {
-							if (pd.allList().get(i).getSong() <= pd.allList().get(j).getSong()) {
-								ps.add(pd.allList().get(i));
-							}
-						}
-					}
-				}
-				for (Phong p : ps) {
-					tb.addRow(new Object[] { p.getId(), p.getTenPhong(), p.getSong(), p.getGiaPhong() });
-				}
-				table.setModel(tb);
-			}
-		});
-		btnHinThTheo.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnHinThTheo.setFocusable(false);
-		btnHinThTheo.setFocusTraversalKeysEnabled(false);
-		btnHinThTheo.setFocusPainted(false);
-		btnHinThTheo.setBorder(new TitledBorder(
-
-				new TitledBorder(
-
-						new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-
-								new Color(160, 160, 160)),
-
-						"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-
-				"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnHinThTheo.setBackground(new Color(119, 136, 153));
-		btnHinThTheo.setBounds(66, 285, 164, 23);
-		contentPane.add(btnHinThTheo);
-
-		JLabel lblNewLabel_1_2 = new JLabel("Giá Phòng/tháng :");
-		lblNewLabel_1_2.setForeground(Color.BLACK);
-		lblNewLabel_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblNewLabel_1_2.setBounds(25, 159, 115, 22);
-		contentPane.add(lblNewLabel_1_2);
-
-		giap = new JTextField();
-		giap.setColumns(10);
-		giap.setBounds(143, 161, 131, 20);
-		contentPane.add(giap);
-
-		JButton btnXemPhng = new JButton("Xem Phòng");
-		btnXemPhng.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					QuanLyNguoiThuePhongf.main(null);;
-					QuanLyNguoiThuePhongf.p = pd.searchById(Integer.valueOf(map.getText())).get(0);
-				} catch (NumberFormatException e1) {
-					
-					e1.printStackTrace();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		btnXemPhng.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnXemPhng.setFocusable(false);
-		btnXemPhng.setFocusTraversalKeysEnabled(false);
-		btnXemPhng.setFocusPainted(false);
-		btnXemPhng.setBorder(new TitledBorder(
-
-				new TitledBorder(
-
-						new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-
-								new Color(160, 160, 160)),
-
-						"", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-
-				"", TitledBorder.TRAILING, TitledBorder.ABOVE_TOP, null, new Color(0, 0, 0)));
-		btnXemPhng.setBackground(new Color(119, 136, 153));
-		btnXemPhng.setBounds(107, 406, 89, 23);
-		contentPane.add(btnXemPhng);
+		btnHinTh_1_4.setForeground(Color.WHITE);
+		btnHinTh_1_4.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		btnHinTh_1_4.setFocusable(false);
+		btnHinTh_1_4.setFocusTraversalKeysEnabled(false);
+		btnHinTh_1_4.setFocusPainted(false);
+		btnHinTh_1_4.setBorder(UIManager.getBorder("CheckBoxMenuItem.border"));
+		btnHinTh_1_4.setBackground(Color.DARK_GRAY);
+		btnHinTh_1_4.setBounds(544, 152, 126, 29);
+		contentPane.add(btnHinTh_1_4);
+		
+		JLabel lblNewLabel_1_1_1 = new JLabel("Số người/phòng :");
+		lblNewLabel_1_1_1.setForeground(Color.BLACK);
+		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_1_1_1.setBounds(273, 126, 117, 24);
+		contentPane.add(lblNewLabel_1_1_1);
+		
+		ng = new JTextField();
+		ng.setColumns(10);
+		ng.setBounds(391, 126, 102, 20);
+		contentPane.add(ng);
+		
+		
 	}
 }

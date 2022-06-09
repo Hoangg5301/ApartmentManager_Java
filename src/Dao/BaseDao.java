@@ -35,10 +35,14 @@ public abstract class BaseDao<D extends Base> {
 	 * Thêm 1 phần tử vào file
 	 */
 	public void add(D obj) {
-		List<D> ls = readData();
-		obj.setId(nextId());
-		ls.add(obj);
-		writeData(ls);
+		try {
+			List<D> ls = readData();
+			obj.setId(nextId());
+			ls.add(obj);
+			writeData(ls);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	/*
 	 * xóa theo id
@@ -89,9 +93,9 @@ public abstract class BaseDao<D extends Base> {
 			}
 			o.close();
 		} catch (FileNotFoundException e) {
-
+			System.out.println(e.getMessage());
 		} catch (IOException e) {
-
+			System.out.println(e.getMessage());
 		}
 		return ls;
 	}

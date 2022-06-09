@@ -6,8 +6,20 @@ import java.math.BigDecimal;
 public class Phong extends Base implements Serializable {
 
 	private String tenPhong;
-	private int song;
+	private int songP,song;
 	private BigDecimal giaPhong;
+
+	public int getSongP() {
+		return songP;
+	}
+
+	public void setSongP(String ngP) throws Exception {
+		try {
+			this.songP = Integer.parseInt(ngP);
+		} catch (Exception e) {
+			throw new Exception("Nhập số người là số nguyên!");
+		}
+	}
 
 	public int getSong() {
 		return song;
@@ -21,8 +33,12 @@ public class Phong extends Base implements Serializable {
 		return giaPhong;
 	}
 	
-	public void setGiaPhong(String giaPhong) {
-		this.giaPhong = new BigDecimal(giaPhong);
+	public void setGiaPhong(String giaPhong) throws Exception {
+		try {
+			this.giaPhong = new BigDecimal(giaPhong);
+		} catch (Exception e) {
+			throw new Exception("Nhập số!");
+		}
 	}
 
 	public String getTenPhong() {
@@ -47,11 +63,23 @@ public class Phong extends Base implements Serializable {
 	/**
 	 * @param tenPhong
 	 * @param giaPhong
+	 * @throws Exception 
 	 */
-	public Phong(String tenPhong, String giaPhong) {
-		this.tenPhong = tenPhong;
-		this.giaPhong = new BigDecimal(giaPhong);
+	public Phong(String tenPhong, String giaPhong,String ngP) throws Exception {
+		
+		try {
+			this.tenPhong = tenPhong;
+			this.giaPhong = new BigDecimal(giaPhong);
+		} catch (Exception e) {
+			throw new Exception("Nhập số cho tiền!");
+		}
+		try {
+			this.songP = Integer.parseInt(ngP);
+		} catch (Exception e) {
+			throw new Exception("Nhập số người là số nguyên!");
+		}
 	}
+	
 //	public String giaToString() {
 //		try {
 //			NumberFormat.getInstance(new Locale("vi", "VN"));
